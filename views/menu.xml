@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- Root -->
+        <menuitem
+            id="fleet_maintenance_request_id"
+            name="Maintenance Request"
+            action="action_maintenance_request_view"
+            parent="fleet.menu_root"
+            sequence="2"/> 
+
+        <menuitem name="Maintenance"
+                  id="fleet_maintenance"
+                  parent="fleet.fleet_configuration"
+                  sequence="1"/>         
+    
+        <menuitem
+            id="fleet_maintenance_type"
+            name="Maintenance Type"
+            action="action_maintenance_type_view"
+            parent="fleet_maintenance"
+             sequence="2"/> 
+       
+    </data>
+</odoo>
+

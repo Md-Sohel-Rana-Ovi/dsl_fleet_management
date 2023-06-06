@@ -1,0 +1,37 @@
+<odoo>
+    <record id="maintenance_payment_request_form" model="ir.ui.view">
+        <field name="name">dsl.fleet.payment.request.wizard.form</field>
+        <field name="model">dsl.fleet.payment.request.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Assign Trainer">
+                <group>
+                    <group>
+                        <field name="user_id"/>
+                        <field name="amount"/>
+                    </group>
+                    <group>
+                        <!-- <field name="date"/> -->
+                        <field name="journal_id"/>                  
+                    </group>
+                </group>
+                <footer>
+                    <button name="create_payment_maintenance" string="Save" type="object" class="btn-primary"/>
+                    <button string="cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_maintenance_payment_request" model="ir.actions.act_window">
+        <field name="name">Assign Trainer</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">dsl.fleet.payment.request.wizard</field>
+        <field name="domain">[]</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="maintenance_payment_request_form"/>
+        <field name="target">new</field>
+    </record>
+
+
+</odoo>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Form View -->
+        <record id="multi_approval_type_view_form_extension_fleet_management" model="ir.ui.view">
+        <field name="name">multi_approval_type_view_form</field>
+        <field name="model">multi.approval.type</field>
+            <field name="priority" eval="7" />
+            <field name="inherit_id" ref="dsl_multi_level_approval_extension.multi_approval_type_view_form_extension"/>
+            <field name="arch" type="xml">
+                <data>
+                    <xpath expr="//field[@name='model_id']" position="after">
+                        <field name="maintenance_type_id"/>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+    </data>
+</odoo>

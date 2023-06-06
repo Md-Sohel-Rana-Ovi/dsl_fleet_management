@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Application Form -->
+        <record model="ir.sequence" id="request_payment_code_sequence">
+            <field name="name">Request Payment Sequence</field>
+            <field name="code">dsl.maintenance.request</field>
+            <field name="implementation">standard</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">MR</field>
+            <field name="suffix"></field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">0</field>
+        </record>
+    </data>
+</odoo>
