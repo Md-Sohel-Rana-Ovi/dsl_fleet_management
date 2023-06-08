@@ -29,7 +29,6 @@
         'sale_management',
         'multi_level_approval',
         'dsl_multi_level_approval_extension',
-        'stock',
         'mail',
        
     ],
@@ -45,8 +44,10 @@
         'views/dsl_maintenance_type.xml',  
         'views/dsl_maintenance_request_views.xml',
         'views/multi_approval_type_inherit_views.xml',
+        'views/fleet_vehicle_views_extension.xml',
+        'views/dsl_fueling_request_views.xml',
         'views/menu.xml',
-        
+         
         ##wizards  
         'wizards/dsl_maintenance_payment_wizards.xml',   
         

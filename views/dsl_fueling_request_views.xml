@@ -1,27 +1,28 @@
 <odoo>
     <data>
         <!-- Search View -->
-        <record id="dsl_maintenance_request_search_view_view" model="ir.ui.view">
-            <field name="name">dsl.maintenance.request.search.view</field>
-            <field name="model">dsl.maintenance.request</field>
+        <record id="dsl_refueling_request_search_view_view" model="ir.ui.view">
+            <field name="name">dsl.vehicle.refueling.search.view</field>
+            <field name="model">dsl.vehicle.refueling</field>
             <field name="arch" type="xml">
-                <search string="Maintenance Request">
-                    <field name="user_id"/>
+                <search string="Refueling Request">
+                    <field name="vendor_id"/>
                     <field name="driver_id"/>
-                    <field name="allocate_person"/>
+                    <field name="manager_id"/>
                     <field name="date"/>
                 </search>
             </field>
         </record>
         <!-- Tree View -->
-        <record id="dsl_maintenance_request_tree_view" model="ir.ui.view">
-            <field name="name">dsl.maintenance.request.tree.view</field>
-            <field name="model">dsl.maintenance.request</field>
+        <record id="dsl_refueling_request_tree_view" model="ir.ui.view">
+            <field name="name">dsl.vehicle.refueling.tree.view</field>
+            <field name="model">dsl.vehicle.refueling</field>
             <field name="arch" type="xml">
-                <tree string="Maintenance Request">
+                <tree string="Refueling Request">
                     <field name="code"/>
-                    <field name="user_id"/>
-                    <field name="allocate_person"/>
+                    <field name="vendor_id"/>
+                    <field name="driver_id"/>
+                    <field name="manager_id"/>
                     <field name="date"/>
                     <field name="amount"/>
                     <field name="state"/>
@@ -29,20 +30,21 @@
             </field>
         </record>
         <!-- Form View -->
-        <record id="dsl_maintenance_request_form_view" model="ir.ui.view">
-            <field name="name">dsl.maintenance.request.view</field>
-            <field name="model">dsl.maintenance.request</field>
+        <record id="dsl_refueling_request_form_view" model="ir.ui.view">
+            <field name="name">dsl.vehicle.refueling.view</field>
+            <field name="model">dsl.vehicle.refueling</field>
             <field name="priority" eval="7"/>
             <field name="arch" type="xml">
-                <form string="Maintenance Request">
+                <form string="Refueling Request">
                     <header>
                         <button name="action_submit" string="Submit" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="action_approve" string="Approve" type="object" attrs="{'invisible': ['|', ('state', '!=', 'submit'), ('is_approved', '!=', True)]}"/>
                         <button id="button_payment" string="Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
                         <button id="button_generate_bill" string="Generate Bill" name="generate_bill" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'payment')]}"/>
                         <button name="action_reset_draft" string="Re-draft" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('state', '=', 'cancel')]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': ['|','|', ('state', '=', 'draft'), ('state', '=', 'cancel'),('state', '=', 'bill')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,payment,bill,cancel"/>
+                        <field name="is_approved" invisible="1"/>
                     </header>
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
@@ -68,20 +70,18 @@
                         </div>
                         <group>
                             <group>
-                                <field name="is_approved" invisible="1"/>
                                 <field name="user_id"/>
                                 <field name="driver_id"/>
-                                <field name="allocate_person"/>
-                                <field name="maintenance_type_id"/>
-                                <field name="product_id"/>
-                            </group>
-                            <group>  
-                                <field name="vehicle_id"/>
+                                <field name="manager_id"/>
                                 <field name="date"/>
-                                <field name="responsible_person"/>
-                                <field name="fuel_type"/>
-                                <field name="move_id" invisible="1"/>
                                 <field name="amount"/>
+                            </group>
+                            <group>
+                                <field name="vehicle_id"/>
+                                <field name="odometer_id"/>
+                                <field name="odometer_unit"/>
+                                <field name="vendor_id"/>
+                                <field name="fuel_type"/>
                             </group>
                         </group>
                     </sheet>
@@ -94,13 +94,13 @@
             </field>
         </record>
         <!-- Action -->
-        <record id="action_maintenance_request_view" model="ir.actions.act_window">
-            <field name="name">Maintenance Requests</field>
+        <record id="action_dsl_refueling_request_view" model="ir.actions.act_window">
+            <field name="name">Refueling Requests</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">dsl.maintenance.request</field>
+            <field name="res_model">dsl.vehicle.refueling</field>
             <field name="domain">[]</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="dsl_maintenance_request_tree_view"/>
+            <field name="view_id" ref="dsl_refueling_request_tree_view"/>
         </record>
     </data>
 </odoo>

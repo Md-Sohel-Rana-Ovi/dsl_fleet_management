@@ -54,3 +54,11 @@ class MultiApproval(models.Model):
                         booking = self.env['dsl.maintenance.request'].sudo().search([('approve_id', '=', rec.id)], order='id desc', limit=1)
                         if booking.state == 'submit':
                             booking.state = 'approve'
+
+            model = self.env['ir.model'].sudo().search([('model', '=', 'dsl.vehicle.refueling')], order='id desc', limit=1)
+            if model:
+                if rec.type_id.model_id.id == model.id:
+                    if rec.state == 'Approved':
+                        booking = self.env['dsl.vehicle.refueling'].sudo().search([('approve_id', '=', rec.id)], order='id desc', limit=1)
+                        if booking.state == 'submit':
+                            booking.state = 'approve'                

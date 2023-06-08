@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <data>
+        <record id="fleet_vehicle_extension_view_form" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='next_assignation_date']" position="after">
+                    <field name="allocate_person"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="fleet_vehicle_extension_button_view_form" model="ir.ui.view">
+            <field name="name">fleet.vehicle.form.extension</field>
+            <field name="model">fleet.vehicle</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//button[@name='open_assignation_logs']" position="before">
+                    <button name="action_fueling_view"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-fire"
+                        context="{'xml_id': 'action_dsl_refueling_request_view'}">
+                        <field name="fueling_request_count" widget="statinfo" string="Fueling Request"/>
+                    </button>
+                </xpath>
+            </field>
+        </record>
+        <!-- vehicle service -->
+        <record id="fleet_vehicle_log_services_view_form_inherited" model="ir.ui.view">
+            <field name="name">fleet.vehicle.log.services.form.inherited</field>
+            <field name="model">fleet.vehicle.log.services</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='service_type_id']" position="after">
+                    <field name="user_id"/>
+                </xpath>
+                <xpath expr="//header" position="replace">
+                    <header>
+                        <button name="action_submit" string="Submit" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                        <button name="action_approve" string="Approve" type="object" attrs="{'invisible': ['|', ('state', '!=', 'submit'), ('is_approved', '!=', True)]}"/>
+                        <button id="button_payment" string="Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
+                        <button id="button_generate_bill" string="Generate Bill" name="generate_bill" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'payment')]}"/>
+                        <button name="action_reset_draft" string="Re-draft" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': ['|','|', ('state', '=', 'draft'), ('state', '=', 'cancel'),('state', '=', 'bill')]}"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,payment,bill,cancel"/>
+                        <field name="is_approved" invisible="1"/>
+                    </header>
+                </xpath>
+                <xpath expr="//widget[@name='web_ribbon']" position="before">
+                    <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_bill"
+                                    type="object"
+                                    class="oe_stat_button"
+                                    icon="fa-pencil-square-o"
+                                   >
+                            <field name="bill_count" widget="statinfo" string="Invoices"/>
+                        </button>
+                        <button type="object" name="toggle_active" class="oe_stat_button" icon="fa-archive">
+                            <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" invisible="1"/>
+                            <span name="active" class="o_stat_text text-success" attrs="{'invisible': [('active', '=', False)]}">Active</span>
+                            <span name="active" class="o_stat_text text-danger" attrs="{'invisible': [('active', '=', True)]}">Deactive</span>
+                        </button>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+        <record id="fleet_vehicle_log_services_view_tree_inherited" model="ir.ui.view">
+            <field name="name">my.fleet.vehicle.log.services.tree.inherited</field>
+            <field name="model">fleet.vehicle.log.services</field>
+            <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='date']" position="before">
+                    <field name="code"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

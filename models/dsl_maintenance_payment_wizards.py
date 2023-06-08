@@ -8,8 +8,9 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
 
     # partner_id = fields.Many2one('res.partner', required=True, string='Request Person', default=lambda self: self.env.user)
     account_move_id = fields.Many2one(comodel_name="account.move")
-    account_payment_id = fields.Many2one(comodel_name="account.payment")
-    user_id = fields.Many2one(comodel_name="res.users",string="Request For Payment")
+    account_payment_id = fields.Many2one(comodel_name="account.payment")  
+    # refuel_id = fields.Many2one('dsl.vehicle.refueling', 'Refuel', required=True)
+    user_id = fields.Many2one(comodel_name='res.users', string='Request For Payment')
     partner_id = fields.Many2one(comodel_name="res.partner",string="Request Person")
     # name = fields.Char(related="student_id.name")
     journal_id = fields.Many2one(comodel_name='account.journal',
@@ -27,11 +28,12 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
     total_payable_amount = fields.Monetary(related="user_id.partner_id.total_invoiced",
                                            string="Total Payable Amount")
 
-    # student_id_string = fields.Char(related="student_id.student_id")
+   
 
-    # @api.onchange('student_id')
-    # def onchange_student_id(self):
-    #     partner = self.env['account.move'].search([('partner_id', '=', self.student_id.user_id.id)])
+    @api.depends('refuel_id')
+    def _compute_user_id(self):
+        for record in self:
+            record.user_id = record.refuel_id.user_id
     
 
     def create_payment_maintenance(self):

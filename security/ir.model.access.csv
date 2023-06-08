@@ -2,4 +2,5 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_dsl_maintenance_type,dsl_maintenance_type,model_dsl_maintenance_type,base.group_user,1,1,1,1
 access_dsl_maintenance_request,dsl_maintenance_request,model_dsl_maintenance_request,base.group_user,1,1,1,1
 access_dsl_fleet_payment_request_wizard,dsl_fleet_payment_request_wizard,model_dsl_fleet_payment_request_wizard,base.group_user,1,1,1,1
+access_dsl_vehicle_refueling,dsl_vehicle_refueling,model_dsl_vehicle_refueling,base.group_user,1,1,1,1
 

@@ -1,44 +1,57 @@
-from odoo import models, fields, api
+from odoo import Command, models, fields
 from datetime import datetime
 
-import logging
-_logger = logging.getLogger(__name__)
+class FleetVehicleExtension(models.Model):
+    _inherit = 'fleet.vehicle'
 
-
-class PaymentRequest(models.Model):
-    _name = 'dsl.maintenance.request'
-    _inherit = ['mail.thread', 'mail.activity.mixin']
-    _description = 'Maintenance Request'
-
-    name = fields.Char(string='Name', track_visibility='onchange')
-    code = fields.Char(string='Code', required=True, copy=False,
-                       readonly=True, index=True, default=lambda self: ('New'))
-    user_id = fields.Many2one('res.users', string='Request For')
-    driver_id = fields.Many2one('res.partner', string='Driver')
+    fueling_request_count = fields.Integer(string="Fuel Request Count", compute='_get_record_count')
     allocate_person = fields.Many2one('res.users', string='Allocate Person')
-    move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
-    product_id = fields.Many2one('product.product', string='Product')
-    date = fields.Date(string='Date')
-    maintenance_type_id = fields.Many2one(
-        'dsl.maintenance.type', string='Request Type')
-    responsible_person = fields.Many2one(
-        'res.users', string='Responsible Person')
-    fuel_type = fields.Selection([
-        ('diesel', 'Diesel'),
-        ('gasoline', 'Gasoline'),
-        ('full_hybrid', 'Full Hybrid'),
-        ('plug_in_hybrid_diesel', 'Plug-in Hybrid Diesel'),
-        ('plug_in_hybrid_gasoline', 'Plug-in Hybrid Gasoline'),
-        ('cng', 'CNG'),
-        ('lpg', 'LPG'),
-        ('hydrogen', 'Hydrogen'),
-        ('electric', 'Electric'),
-    ], string='Fuel Type')
-    vehicle_id = fields.Many2one('fleet.vehicle', string='Vehicles')
-    amount = fields.Float(string='Amount')
-    active = fields.Boolean(string="Active", default=True,
-                            track_visibility='onchange')
-    note = fields.Text(string='Note', track_visibility='onchange')
+  
+    def _get_record_count(self):
+        for rec in self:
+            record_ids = self.env['dsl.vehicle.refueling'].search([
+                ('driver_id', '=', self.driver_id.id)
+            ])
+            rec.fueling_request_count = len(record_ids)  
+
+    # def action_fueling_view(self):
+    #     self.ensure_one()
+    #     xml_id = self.env.context.get('xml_id')
+    #     if xml_id:
+    #         res = {
+    #             'type': 'ir.actions.act_window',
+    #             'name': 'Fueling Request',
+    #             'view_mode': 'tree,form',
+    #             'res_model': 'dsl.maintenance.request',  # Replace with the actual model name
+    #             'target': 'current',
+    #             'domain': [('vehicle_id', '=', self.id)],
+    #             'context': dict(self.env.context, default_vehicle_id=self.id, group_by=False),
+    #         }
+    #         return res
+    #     return False
+    def action_fueling_view(self):
+        self.ensure_one()
+        xml_id = self.env.context.get('xml_id')
+        if xml_id:
+            res = self.env['ir.actions.act_window']._for_xml_id('dsl_fleet_management.%s' % xml_id)
+            res.update(
+                context=dict(self.env.context, default_vehicle_id=self.id, group_by=False),
+                domain=[('driver_id', '=', self.driver_id.id)]
+            )
+            return res
+        else:
+            action = {'type': 'ir.actions.act_window_close'}    
+        return False
+
+
+
+
+class FleetVehicleServiceExtension(models.Model):
+    _inherit = 'fleet.vehicle.log.services'
+
+    
+    code = fields.Char(string="Code", readonly=True, copy=False, default=lambda self: self.env['ir.sequence'].next_by_code('fleet.vehicle.log.services.sequence'))
+    user_id = fields.Many2one('res.users', string='Request For')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submit', 'Submit'),
@@ -49,14 +62,18 @@ class PaymentRequest(models.Model):
         string='Status', readonly=True, default='draft')
     is_approved = fields.Boolean(
         string='Is Approved', readonly="1", default=False, compute='_compute_approval_user')
-    application_date = fields.Datetime(
-        string='Application Date', default=lambda self: fields.Datetime.now())
     registration_date = fields.Datetime(string='Registration Date')
     approve_id = fields.Many2one('multi.approval', string="Approve By")
     approve_line_ids = fields.One2many(
         related='approve_id.line_ids', string="Approve Line")
     bill_count = fields.Integer(string="Invoice Count", compute='_get_bill_count')
-   
+    product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
+    move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
+    active = fields.Boolean(string="Active", default=True,
+                            track_visibility='onchange')
+    def _default_product_id(self):
+        return 0
+    
     def _compute_approval_user(self):
         for rec in self:
             is_approved = False
@@ -70,33 +87,18 @@ class PaymentRequest(models.Model):
             rec.is_approved = is_approved
     
 
-    # def _get_bill_count(self):
-    #     for rec in self:
-    #         invoice_ids = self.env['account.move'].search([('ref', '=', rec.id), ('user_id', '=', rec.user_id.partner_id.id)])
-
-    #         rec.bill_count = len(invoice_ids)
-       
-
-    # def action_view_bill(self):
+    
+    # def payment_maintenance_request_view(self):
     #     return {
-    #         'name': 'Request Bill',
+    #         'name': "Maintenance Payment",
     #         'type': 'ir.actions.act_window',
-    #         'view_mode': 'tree,form',
-    #         'res_model': 'account.move',
-    #         'domain': [('ref', '=', self.id)],
-    #         'context': {'create': False}
+    #         'res_model': 'dsl.fleet.payment.request.wizard',
+    #         'view_mode': 'form',
+    #         'target': 'new',
+    #         'context': {
+    #             'driver_id': self.id,
+    #         },
     #     }
-    def payment_maintenance_request_view(self):
-        return {
-            'name': "Maintenance Payment",
-            'type': 'ir.actions.act_window',
-            'res_model': 'dsl.fleet.payment.request.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'driver_id': self.id,
-            },
-        }
 
     def action_draft(self):
         self.state = 'draft'
@@ -125,14 +127,14 @@ class PaymentRequest(models.Model):
     def action_submit(self):
         for rec in self:
             model = self.env['ir.model'].sudo().search(
-                [('model', '=', 'dsl.maintenance.request')], order='id desc', limit=1)
-            approval_type_id = self.env['multi.approval.type'].search([('model_id', '=', model.id), (
-                'maintenance_type_id', '=', rec.maintenance_type_id.id)], order="id desc", limit=1)
+                [('model', '=', 'dsl.vehicle.refueling')], order='id desc', limit=1)
+            approval_type_id = self.env['multi.approval.type'].search([('model_id', '=', model.id), ], order="id desc", limit=1)
+            # ('maintenance_type_id', '=', rec.maintenance_type_id.id)
             if approval_type_id:
                 approval = self.env['multi.approval'].sudo().create({
                     'name': 'Approval of ' + str(rec.code),
                     'type_id': approval_type_id.id,
-                    'user_id': rec.user_id.id,
+                    'user_id': rec.manager_id.id,
                 })
                 if approval:
                     approval.action_submit()
@@ -176,21 +178,7 @@ class PaymentRequest(models.Model):
             ])
             rec.bill_count = len(invoice_ids)     
               
-    # def action_view_bill(self):
-    #     invoices = self.env['account.move'].search([('partner_id', '=', self.user_id.partner_id.id), ('move_type', '=', 'in_invoice'), ('state', '=', 'draft')])
-    #     if invoices:
-    #         action = {
-    #             'name': 'Request Bill',
-    #             'type': 'ir.actions.act_window',
-    #             'view_mode': 'form',
-    #             'res_model': 'account.move',
-    #             'res_id': invoices.ids[0],
-    #             'context': {'create': False},
-    #         }
-    #     else:
-    #         action = {'type': 'ir.actions.act_window_close'}
-    #     return action
-
+   
     def action_view_bill(self):
         invoices = self.env['account.move'].search([('partner_id', '=', self.user_id.partner_id.id), ('move_type', '=', 'in_invoice'), ('state', '=', 'draft')])
         if invoices:
@@ -205,13 +193,4 @@ class PaymentRequest(models.Model):
             }
         else:
             action = {'type': 'ir.actions.act_window_close'}
-        return action
-    
-    @api.model
-    def create(self, vals):
-        vals['code'] = self.env['ir.sequence'].next_by_code(
-            'dsl.maintenance.request')
-        result = super(PaymentRequest, self).create(vals)
-        return result
-
-
+        return action        

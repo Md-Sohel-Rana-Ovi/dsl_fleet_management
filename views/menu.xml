@@ -3,12 +3,25 @@
     <data>
 
         <!-- Root -->
-        <menuitem
+         <menuitem
             id="fleet_maintenance_request_id"
             name="Maintenance Request"
             action="action_maintenance_request_view"
             parent="fleet.menu_root"
             sequence="2"/> 
+        <!-- <menuitem
+            id="fleet_service_request"
+            name="Service Request"
+            action="fleet_vehicle_log_services_action"
+            parent="fleet.menu_root"
+            sequence="3"/>  -->
+
+        <menuitem
+            id="fleet_refueling_request"
+            name="Fueling Request"
+            action="action_dsl_refueling_request_view"
+            parent="fleet.menu_root"
+            sequence="3"/>
 
         <menuitem name="Maintenance"
                   id="fleet_maintenance"

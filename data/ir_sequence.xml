@@ -14,5 +14,24 @@
             <field name="number_increment">1</field>
             <field name="number_next_actual">0</field>
         </record>
+        <record model="ir.sequence" id="refuel_request_sequence">
+            <field name="name">Refuel Request Sequence</field>
+            <field name="code">dsl.vehicle.refueling</field>
+            <field name="implementation">standard</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">RFR</field>
+            <field name="suffix"></field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">0</field>
+        </record>
+
+        <record id="sequence_service_fleet_model" model="ir.sequence">
+            <field name="name">Service Sequence</field>
+            <field name="code">fleet.vehicle.log.services.sequence</field>
+            <field name="prefix">SR</field>
+            <field name="padding">5</field>
+            <!-- Add other necessary attributes for the sequence -->
+        </record>
     </data>
 </odoo>
