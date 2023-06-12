@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-
         <!-- Root -->
-         <menuitem
-            id="fleet_maintenance_request_id"
-            name="Maintenance Request"
-            action="action_maintenance_request_view"
+        <record id="dsl_fleet_management_action" model="ir.actions.client">
+            <field name="name">Dashboard</field>
+            <field name="tag">dsl_fleet_management</field>
+        </record>
+      
+        <menuitem id="fleet_dashboard_menu" 
+            name="Dashboard" 
+            action="dsl_fleet_management_action" 
             parent="fleet.menu_root"
-            sequence="2"/> 
-        <!-- <menuitem
-            id="fleet_service_request"
-            name="Service Request"
-            action="fleet_vehicle_log_services_action"
-            parent="fleet.menu_root"
-            sequence="3"/>  -->
-
+            sequence="0"/>
+        <menuitem action="fleet.fleet_vehicle_log_services_action" 
+            parent="fleet.menu_root" 
+            id="fleet.fleet_vehicle_log_services_menu" 
+            groups="fleet.fleet_group_user" 
+            sequence="2"/>
         <menuitem
             id="fleet_refueling_request"
-            name="Fueling Request"
+            name="Refueling"
             action="action_dsl_refueling_request_view"
             parent="fleet.menu_root"
             sequence="3"/>
-
+            
+        <menuitem
+            id="vehicle_purchase"
+            name="Purchase"
+            action="action_dsl_vehicle_purchase_view"
+            parent="fleet.menu_root"
+             sequence="4"/>     
         <menuitem name="Maintenance"
                   id="fleet_maintenance"
                   parent="fleet.fleet_configuration"
-                  sequence="1"/>         
-    
+                  sequence="1"/>
         <menuitem
             id="fleet_maintenance_type"
             name="Maintenance Type"
             action="action_maintenance_type_view"
             parent="fleet_maintenance"
-             sequence="2"/> 
-       
+             sequence="2"/>
+        
     </data>
 </odoo>
-

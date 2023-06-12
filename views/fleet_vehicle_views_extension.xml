@@ -33,14 +33,15 @@
             <field name="model">fleet.vehicle.log.services</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='service_type_id']" position="after">
+                <xpath expr="//field[@name='vehicle_id']" position="before"> 
                     <field name="user_id"/>
+                    <field name="manager_id"/>
                 </xpath>
                 <xpath expr="//header" position="replace">
                     <header>
                         <button name="action_submit" string="Submit" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="action_approve" string="Approve" type="object" attrs="{'invisible': ['|', ('state', '!=', 'submit'), ('is_approved', '!=', True)]}"/>
-                        <button id="button_payment" string="Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
+                        <button id="button_payment" string="Advance Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
                         <button id="button_generate_bill" string="Generate Bill" name="generate_bill" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'payment')]}"/>
                         <button name="action_reset_draft" string="Re-draft" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"/>
                         <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': ['|','|', ('state', '=', 'draft'), ('state', '=', 'cancel'),('state', '=', 'bill')]}"/>

@@ -60,6 +60,7 @@ class FleetVehicleServiceExtension(models.Model):
         ('bill', 'Generate Bill'),
         ('cancel', 'Cancelled'), ],
         string='Status', readonly=True, default='draft')
+    manager_id = fields.Many2one('res.users', 'Fleet Manager', related='vehicle_id.manager_id', store=True)    
     is_approved = fields.Boolean(
         string='Is Approved', readonly="1", default=False, compute='_compute_approval_user')
     registration_date = fields.Datetime(string='Registration Date')
@@ -134,7 +135,7 @@ class FleetVehicleServiceExtension(models.Model):
                 approval = self.env['multi.approval'].sudo().create({
                     'name': 'Approval of ' + str(rec.code),
                     'type_id': approval_type_id.id,
-                    'user_id': rec.manager_id.id,
+                    'user_id': rec.user_id.id,
                 })
                 if approval:
                     approval.action_submit()

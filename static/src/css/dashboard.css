@@ -1,0 +1,113 @@
+        .dashboard-container{
+            background-color: #feffff;
+            min-height: 85dvh!important;
+            border-radius: 2rem;
+        
+        }
+        .profile-img{
+            max-width: 8rem;
+            max-height: 8rem;
+            padding: 0.3rem;
+        }
+        .dashh-profile-card{
+            margin-top: 1rem;
+            min-width: 10rem;
+            max-height: 36rem;
+            border-radius: 1.5rem;
+        }
+        .small-text{
+            font-size: x-small;
+            font-weight: 300;
+        }
+        .medium-text{
+            font-size: small;
+            font-weight: 500;
+
+        }
+        .xl-text{
+            font-size: large;
+            font-weight: 600;
+            font-size: large;
+            
+        }
+        .card-size{
+            min-height: 11rem;
+        }
+
+        .graph-border{
+            border-radius: 2rem;
+        }
+        .custom-button{
+            width: 4rem;
+            height: 2rem;
+            
+        }
+        .icon-bg1{
+            background-color: #f53b57;
+        }
+        .icon-bg2{
+            background-color: #ffc048;
+        }
+        .icon-bg3{
+            background-color: #3c40c6;
+        }
+        .icon-bg4{
+            background-color: #05c46b;
+        }
+        .icon-bg5{
+            background-color: #182C61;
+        }
+        .icon-bg6{
+            background-color: #6D214F;
+        }
+
+        .menu-card{
+            min-height: 35dvh;
+            
+        }
+        .sec-card{
+            min-height: 45dvh;
+        }
+        .zoom-out-card {
+        transition: transform 0.3s ease;
+        }
+        .zoom-out-card:hover {
+        transform: scale(1.1);
+        text-decoration: none;
+        }
+        .info-text{
+            font-weight: 600;
+            font-size: small;
+        }
+        .logo-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .d-flex {
+        display: flex;
+        }
+
+        .justify-content-around {
+        justify-content: space-around;
+        }
+
+        .align-items-center {
+        align-items: center;
+        }
+
+        .flex-column {
+        flex-direction: column;
+        }
+
+        .icon-container {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        flex-wrap: wrap;
+        }
+
+        .text-container {
+        margin-top: 0.5rem;
+        text-align: center;
+        }

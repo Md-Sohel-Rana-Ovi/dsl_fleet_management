@@ -3,17 +3,6 @@
     <data noupdate="1">
 
         <!-- Application Form -->
-        <record model="ir.sequence" id="request_payment_code_sequence">
-            <field name="name">Request Payment Sequence</field>
-            <field name="code">dsl.maintenance.request</field>
-            <field name="implementation">standard</field>
-            <field name="active">TRUE</field>
-            <field name="prefix">MR</field>
-            <field name="suffix"></field>
-            <field name="padding">5</field>
-            <field name="number_increment">1</field>
-            <field name="number_next_actual">0</field>
-        </record>
         <record model="ir.sequence" id="refuel_request_sequence">
             <field name="name">Refuel Request Sequence</field>
             <field name="code">dsl.vehicle.refueling</field>
@@ -32,6 +21,18 @@
             <field name="prefix">SR</field>
             <field name="padding">5</field>
             <!-- Add other necessary attributes for the sequence -->
+        </record>
+
+        <record model="ir.sequence" id="purchase_code_sequence">
+            <field name="name">Purchase Sequence</field>
+            <field name="code">dsl.vehicle.purchase</field>
+            <field name="implementation">standard</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">PUR</field>
+            <field name="suffix"></field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">0</field>
         </record>
     </data>
 </odoo>

@@ -1,59 +1,53 @@
 <odoo>
     <data>
         <!-- Search View -->
-        <record id="dsl_maintenance_request_search_view_view" model="ir.ui.view">
-            <field name="name">dsl.maintenance.request.search.view</field>
-            <field name="model">dsl.maintenance.request</field>
+        <record id="dsl_vehicle_purchase_search_view_view" model="ir.ui.view">
+            <field name="name">dsl.vehicle.purchase.search.view</field>
+            <field name="model">dsl.vehicle.purchase</field>
             <field name="arch" type="xml">
-                <search string="Maintenance Request">
-                    <field name="user_id"/>
-                    <field name="driver_id"/>
-                    <field name="allocate_person"/>
-                    <field name="date"/>
+                <search string="Purchase">
+                    <field name="partner_id"/>
+                    <field name="serial_number"/>
+                    <field name="model_id"/>
+                    <field name="purchase_order_number"/>
+                    <field name="challan_number"/>
                 </search>
             </field>
         </record>
         <!-- Tree View -->
-        <record id="dsl_maintenance_request_tree_view" model="ir.ui.view">
-            <field name="name">dsl.maintenance.request.tree.view</field>
-            <field name="model">dsl.maintenance.request</field>
+        <record id="dsl_vehicle_purchase_tree_view" model="ir.ui.view">
+            <field name="name">dsl.vehicle.purchase.tree.view</field>
+            <field name="model">dsl.vehicle.purchase</field>
             <field name="arch" type="xml">
-                <tree string="Maintenance Request">
-                    <field name="code"/>
-                    <field name="user_id"/>
-                    <field name="allocate_person"/>
-                    <field name="date"/>
-                    <field name="amount"/>
-                    <field name="state"/>
+                <tree string="Purchase">
+                    <field name="partner_id"/>
+                    <field name="serial_number"/>
+                    <field name="model_id"/>
+                    <field name="purchase_order_number"/>
+                    <field name="challan_number"/>
                 </tree>
             </field>
         </record>
         <!-- Form View -->
-        <record id="dsl_maintenance_request_form_view" model="ir.ui.view">
-            <field name="name">dsl.maintenance.request.view</field>
-            <field name="model">dsl.maintenance.request</field>
+        <record id="dsl_vehicle_purchase_form_view" model="ir.ui.view">
+            <field name="name">dsl.vehicle.purchase.form.view</field>
+            <field name="model">dsl.vehicle.purchase</field>
             <field name="priority" eval="7"/>
             <field name="arch" type="xml">
-                <form string="Maintenance Request">
-                    <header>
+                <form string="Purchase">
+                    <!-- <header>
                         <button name="action_submit" string="Submit" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="action_approve" string="Approve" type="object" attrs="{'invisible': ['|', ('state', '!=', 'submit'), ('is_approved', '!=', True)]}"/>
-                        <button id="button_payment" string="Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
+                        <button id="button_payment" string="Advance Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
                         <button id="button_generate_bill" string="Generate Bill" name="generate_bill" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'payment')]}"/>
                         <button name="action_reset_draft" string="Re-draft" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"/>
-                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': ['|', ('state', '=', 'draft'), ('state', '=', 'cancel')]}"/>
+                        <button name="action_cancel" string="Cancel" type="object" attrs="{'invisible': ['|','|', ('state', '=', 'draft'), ('state', '=', 'cancel'),('state', '=', 'bill')]}"/>
                         <field name="state" widget="statusbar" statusbar_visible="draft,submit,approve,payment,bill,cancel"/>
-                    </header>
+                        <field name="is_approved" invisible="1"/>
+                    </header> -->
                     <sheet>
                         <widget name="web_ribbon" title="Archived" bg_color="bg-danger" attrs="{'invisible': [('active', '=', True)]}"/>
                         <div class="oe_button_box" name="button_box">
-                            <button name="action_view_bill"
-                                    type="object"
-                                    class="oe_stat_button"
-                                    icon="fa-pencil-square-o"
-                                   >
-                                <field name="bill_count" widget="statinfo" string="Invoices"/>
-                            </button>
                             <button type="object" name="toggle_active" class="oe_stat_button" icon="fa-archive">
                                 <field name="active" widget="boolean_button" options="{'terminology': 'archive'}" invisible="1"/>
                                 <span name="active" class="o_stat_text text-success" attrs="{'invisible': [('active', '=', False)]}">Active</span>
@@ -68,22 +62,23 @@
                         </div>
                         <group>
                             <group>
-                                <field name="is_approved" invisible="1"/>
-                                <field name="user_id"/>
-                                <field name="driver_id"/>
-                                <field name="allocate_person"/>
-                                <field name="maintenance_type_id"/>
-                                <field name="product_id"/>
+                                <field name="partner_id"/>
+                                <field name="serial_number"/>
+                                <field name="model_id"/>
+                                <field name="purchase_order_number"/>
+                                <field name="challan_number"/>
                             </group>
-                            <group>  
-                                <field name="vehicle_id"/>
-                                <field name="date"/>
-                                <field name="responsible_person"/>
-                                <field name="fuel_type"/>
-                                <field name="move_id" invisible="1"/>
-                                <field name="amount"/>
+                            <group>
+                                <field name="warranty_guarantee_selection"/>
+                                <field name="warranty_guarantee_date_selection"/>
+                                <field name="expiry_date"/>
+                                <field name="location" />
+                                <field name="date_of_issue" />
+                                <field name="date_of_purchase_approve"/>
                             </group>
                         </group>
+                        <separator string="Notes"/>
+                        <field nolabel="1" name="note" placeholder="Write here any other information related to the Vehicle Purchase."/>
                     </sheet>
                     <div class="oe_chatter">
                         <field name="message_follower_ids" widget="mail_followers"/>
@@ -94,13 +89,13 @@
             </field>
         </record>
         <!-- Action -->
-        <record id="action_maintenance_request_view" model="ir.actions.act_window">
-            <field name="name">Maintenance Requests</field>
+        <record id="action_dsl_vehicle_purchase_view" model="ir.actions.act_window">
+            <field name="name">Purchase</field>
             <field name="type">ir.actions.act_window</field>
-            <field name="res_model">dsl.maintenance.request</field>
+            <field name="res_model">dsl.vehicle.purchase</field>
             <field name="domain">[]</field>
             <field name="view_mode">tree,form</field>
-            <field name="view_id" ref="dsl_maintenance_request_tree_view"/>
+            <field name="view_id" ref="dsl_vehicle_purchase_tree_view"/>
         </record>
     </data>
 </odoo>

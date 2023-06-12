@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-# Part of Odoo. See LICENSE file for full copyright and licensing details.
-
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from datetime import datetime
@@ -82,17 +80,22 @@ class FleetVehicleRefueling(models.Model):
     
 
     
-    # def payment_maintenance_request_view(self):
-    #     return {
-    #         'name': "Maintenance Payment",
-    #         'type': 'ir.actions.act_window',
-    #         'res_model': 'dsl.fleet.payment.request.wizard',
-    #         'view_mode': 'form',
-    #         'target': 'new',
-    #         'context': {
-    #             'driver_id': self.id,
-    #         },
-    #     }
+    def _get_odometer(self):
+        self.odometer = 0
+        for record in self:
+            if record.odometer_id:
+                record.odometer = record.odometer_id.value
+
+    def _set_odometer(self):
+        for record in self:
+            if not record.odometer:
+                raise UserError(_('Emptying the odometer value of a vehicle is not allowed.'))
+            odometer = self.env['fleet.vehicle.odometer'].create({
+                'value': record.odometer,
+                'date': record.date or fields.Date.context_today(record),
+                'vehicle_id': record.vehicle_id.id
+            })
+            self.odometer_id = odometer
 
     def action_draft(self):
         self.state = 'draft'
@@ -128,7 +131,7 @@ class FleetVehicleRefueling(models.Model):
                 approval = self.env['multi.approval'].sudo().create({
                     'name': 'Approval of ' + str(rec.code),
                     'type_id': approval_type_id.id,
-                    'user_id': rec.manager_id.id,
+                    'user_id': rec.user_id.id,
                 })
                 if approval:
                     approval.action_submit()
