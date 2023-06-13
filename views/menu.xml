@@ -29,7 +29,15 @@
             name="Purchase"
             action="action_dsl_vehicle_purchase_view"
             parent="fleet.menu_root"
-             sequence="4"/>     
+             sequence="4"/>  
+
+        <menuitem
+            id="accidental_case"
+            name="Accidental Case"
+            action="action_dsl_accidental_case_view"
+            parent="fleet.menu_root"
+             sequence="5"/>      
+
         <menuitem name="Maintenance"
                   id="fleet_maintenance"
                   parent="fleet.fleet_configuration"
@@ -43,3 +51,4 @@
         
     </data>
 </odoo>
+

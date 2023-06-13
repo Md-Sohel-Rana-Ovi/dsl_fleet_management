@@ -3,4 +3,5 @@ access_dsl_maintenance_type,dsl_maintenance_type,model_dsl_maintenance_type,base
 access_dsl_fleet_payment_request_wizard,dsl_fleet_payment_request_wizard,model_dsl_fleet_payment_request_wizard,base.group_user,1,1,1,1
 access_dsl_vehicle_refueling,dsl_vehicle_refueling,model_dsl_vehicle_refueling,base.group_user,1,1,1,1
 access_dsl_vehicle_purchase,dsl_vehicle_purchase,model_dsl_vehicle_purchase,base.group_user,1,1,1,1
+access_dsl_accidental_case,dsl_accidental_case,model_dsl_accidental_case,base.group_user,1,1,1,1
 

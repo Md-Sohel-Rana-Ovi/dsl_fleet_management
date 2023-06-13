@@ -12,55 +12,90 @@ class FleetDashboard(models.Model):
         total_vehicle = self.env['fleet.vehicle'].search([])
         total_driver = self.env['fleet.vehicle'].search([])
         total_model = self.env['fleet.vehicle.model'].search([])
-        total_refueling = self.env['dsl.vehicle.refueling'].search([('state', '=', 'bill')])
-        _logger.info(len(total_refueling))
-        _logger.info(len(total_refueling))
-        _logger.info(len(total_refueling))
-        total_services = self.env['fleet.vehicle.log.services'].search([('state', '=', 'bill')])
+        total_refueling = self.env['dsl.vehicle.refueling'].search([])
+        accidental_case = self.env['dsl.accidental.case'].search([])
+        total_services = self.env['fleet.vehicle.log.services'].search([])
         return {
             'total_vehicle': len(total_vehicle),
             'total_driver': len(total_driver),
             'total_model':len(total_model),
             'total_refueling':len(total_refueling),
             'total_services':len(total_services),
+            'accidental_case':len(accidental_case),
            
         }
+    
+
+
+
+    @api.model
+    def get_team_ticket_count_services_pie(self):
+        tickets = self.env['fleet.vehicle.log.services'].search([])
+        team_counts = {}
+
+        for ticket in tickets:
+            team = ticket.user_id.name
+            if team not in team_counts:
+                team_counts[team] = 1
+            else:
+                team_counts[team] += 1
+
+        data = []
+        colors = [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(201, 203, 207, 0.2)'
+        ]
+        color_index = 0
+
+        for team, count in team_counts.items():
+            data.append({
+                'label': team,
+                'value': count,
+                'color': colors[color_index]
+            })
+            color_index = (color_index + 1) % len(colors)
+
+        return data
+    
 
     
     @api.model
-    def get_team_ticket_count_pie(self):
-        """bar chart"""
-        ticket_count = []
-        team_list = []
-        tickets = self.env['fleet.vehicle'].search([])
+    def get_team_ticket_count_refueling_pie(self):
+        tickets = self.env['dsl.vehicle.refueling'].search([])
+        team_counts = {}
 
-        for rec in tickets:
-            if rec:
-                team = rec.name
-                if team not in team_list:
-                    team_list.append(team)
-                    ticket_count.append(team)
-                # ticket_count.append(team)
+        for ticket in tickets:
+            team = ticket.user_id.name
+            if team not in team_counts:
+                team_counts[team] = 1
+            else:
+                team_counts[team] += 1
 
-        value = len(ticket_count)
-        team_val = []
-        team_val.append({'label': "total_vehicle", 'value': value})
-        # for index in range(len(team_list)):
-        #     # value = ticket_count.count(team_list[index])
-        #     value = len(ticket_count)
-        #     team_name = team_list[index]
-        #     team_val.append({'label': "total_vehicle", 'value': value})
-        name = []
-        for record in team_val:
-            name.append(record.get('label'))
-        #
-        count = []
-        for record in team_val:
-            count.append(record.get('value'))
-        #
-        team = [count, name]
-        return team
-    
-   
+        data = []
+        colors = [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 205, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(201, 203, 207, 0.2)'
+        ]
+        color_index = 0
+
+        for team, count in team_counts.items():
+            data.append({
+                'label': team,
+                'value': count,
+                'color': colors[color_index]
+            })
+            color_index = (color_index + 1) % len(colors)
+
+        return data 
 
 

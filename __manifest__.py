@@ -46,6 +46,7 @@
         'views/fleet_vehicle_views_extension.xml',
         'views/dsl_vehicle_purchase_views.xml',
         'views/dsl_fueling_request_views.xml',
+        'views/dsl_accidental_case_views.xml',
         'views/menu.xml',
 
         # wizards

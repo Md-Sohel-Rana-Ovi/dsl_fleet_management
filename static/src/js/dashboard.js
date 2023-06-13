@@ -28,9 +28,10 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
  
         render_graphs: function () {
          var self = this;
-         self.render_team_ticket_count_graph();
+         self.render_team_ticket_count_services_graph();
+         self.render_team_ticket_count_refueling_request_graph();
          
- 
+         
      },
  
         willStart: function(){
@@ -49,70 +50,181 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
             
         },
         
-    
+
+        render_team_ticket_count_services_graph: function () {
+            var self = this;
+            var ctx = self.$(".team_ticket_count");
+        
+            rpc.query({
+                model: "dsl.fleet.dashboard",
+                method: "get_team_ticket_count_services_pie",
+            }).then(function (data) {
+                var datasets = [{
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 1
+                }];
+        
+                data.forEach(function (record) {
+                    datasets[0].data.push(record.value);
+                    datasets[0].backgroundColor.push(record.color);
+                    datasets[0].borderColor.push(record.color);
+                });
+        
+                var chartData = {
+                    datasets: datasets,
+                    labels: data.map(function (record) {
+                        return record.label;
+                    })
+                };
+        
+                var options = {
+                    responsive: true,
+                    title: false,
+                    maintainAspectRatio: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                steps: 10,
+                                stepValue: 5,
+                            }
+                        }]
+                    }
+                };
+        
+                var chart = new Chart(ctx, {
+                    type: "pie",
+                    data: chartData,
+                    options: options
+                });
+            });
+        },
+
+        render_team_ticket_count_refueling_request_graph: function () {
+            var self = this;
+            var ctx = self.$(".vehicle_refueling_count");
+        
+            rpc.query({
+                model: "dsl.fleet.dashboard",
+                method: "get_team_ticket_count_refueling_pie",
+            }).then(function (data) {
+                var datasets = [{
+                    data: [],
+                    backgroundColor: [],
+                    borderColor: [],
+                    borderWidth: 1
+                }];
+        
+                data.forEach(function (record) {
+                    datasets[0].data.push(record.value);
+                    datasets[0].backgroundColor.push(record.color);
+                    datasets[0].borderColor.push(record.color);
+                });
+        
+                var chartData = {
+                    datasets: datasets,
+                    labels: data.map(function (record) {
+                        return record.label;
+                    })
+                };
+        
+                var options = {
+                    responsive: true,
+                    title: false,
+                    maintainAspectRatio: true,
+                    legend: {
+                        display: false
+                    },
+                    scales: {
+                        yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                steps: 10,
+                                stepValue: 5,
+                            }
+                        }]
+                    }
+                };
+        
+                var chart = new Chart(ctx, {
+                    type: "bar",
+                    data: chartData,
+                    options: options
+                });
+            });
+        },
+
+        
      
-        render_team_ticket_count_graph: function () {
-         var self = this
-         var ctx = self.$(".team_ticket_count");
-         rpc.query({
-             model: "dsl.fleet.dashboard",
-             method: "get_team_ticket_count_pie",
-         }).then(function (arrays) {
-             var data = {
-                 labels: arrays[1],
-                 datasets: [{
-                     label: "",
-                     data: arrays[0],
-                     backgroundColor: [
-                         'rgba(255, 99, 132, 0.2)',
-                         'rgba(255, 159, 64, 0.2)',
-                         'rgba(255, 205, 86, 0.2)',
-                         'rgba(75, 192, 192, 0.2)',
-                         'rgba(54, 162, 235, 0.2)',
-                         'rgba(153, 102, 255, 0.2)',
-                         'rgba(201, 203, 207, 0.2)'
-                     ],
-                     borderColor: ['rgb(255, 99, 132)',
-                         'rgb(255, 159, 64)',
-                         'rgb(255, 205, 86)',
-                         'rgb(75, 192, 192)',
-                         'rgb(54, 162, 235)',
-                         'rgb(153, 102, 255)',
-                         'rgb(201, 203, 207)'
-                     ],
-                     borderWidth: 1
-                 },]
-             };
+    //     render_team_ticket_count_graph: function () {
+    //      var self = this
+    //      var ctx = self.$(".vehicle_refueling_count");
+    //      rpc.query({
+    //          model: "dsl.fleet.dashboard",
+    //          method: "get_team_ticket_count_pie",
+    //      }).then(function (arrays) {
+    //          var data = {
+    //              labels: arrays[1],
+    //              datasets: [{
+    //                  label: "",
+    //                  data: arrays[0],
+    //                  backgroundColor: [
+    //                      'rgba(255, 99, 132, 0.2)',
+    //                      'rgba(255, 159, 64, 0.2)',
+    //                      'rgba(255, 205, 86, 0.2)',
+    //                      'rgba(75, 192, 192, 0.2)',
+    //                      'rgba(54, 162, 235, 0.2)',
+    //                      'rgba(153, 102, 255, 0.2)',
+    //                      'rgba(201, 203, 207, 0.2)'
+    //                  ],
+    //                  borderColor: ['rgb(255, 99, 132)',
+    //                      'rgb(255, 159, 64)',
+    //                      'rgb(255, 205, 86)',
+    //                      'rgb(75, 192, 192)',
+    //                      'rgb(54, 162, 235)',
+    //                      'rgb(153, 102, 255)',
+    //                      'rgb(201, 203, 207)'
+    //                  ],
+    //                  borderWidth: 1
+    //              },]
+    //          };
  
-             //options
-             var options = {
-                 responsive: true,
-                 title: false,
-                 maintainAspectRatio: true,
-                 legend: {
-                     display: false //This will do the task
-                 },
-                 scales: {
-                     yAxes: [{
-                         display: true,
-                         ticks: {
-                             beginAtZero: true,
-                             steps: 10,
-                             stepValue: 5,
-                             // max: 100
-                         }
-                     }]
-                 }
-             };
+    //          //options
+    //          var options = {
+    //              responsive: true,
+    //              title: false,
+    //              maintainAspectRatio: true,
+    //              legend: {
+    //                  display: false //This will do the task
+    //              },
+    //              scales: {
+    //                  yAxes: [{
+    //                      display: true,
+    //                      ticks: {
+    //                          beginAtZero: true,
+    //                          steps: 10,
+    //                          stepValue: 5,
+    //                          // max: 100
+    //                      }
+    //                  }]
+    //              }
+    //          };
  
-             // create Chart class object
-             var chart = new Chart(ctx, {
-                 type: "pie",
-                 data: data,
-                 options: options
-             });
-         });
-     },
+    //          // create Chart class object
+    //          var chart = new Chart(ctx, {
+    //              type: "bar",
+    //              data: data,
+    //              options: options
+    //          });
+    //      });
+    //  },
  
      
         fetch_data: function() {
@@ -128,10 +240,11 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
                 $('#total_model').append('<span>' + result.total_model + '</span>');
                 $('#total_refueling').append('<span>' + result.total_refueling + '</span>');
                 $('#total_services').append('<span>' + result.total_services + '</span>');
+                $('#accidental_case').append('<span>' + result.accidental_case + '</span>');
             });
         },
  
-     
+        
     });
 
 

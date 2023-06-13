@@ -15,10 +15,10 @@
                             <div class="col-sm-12 mb-4 ">
                                 <div class="row p-2">
                                     <div class="col-md-4 col-sm-5 all_products oh-data ">
-                                        <div class="card ">
+                                        <div class="card shadow-lg rounded">
                                             <div class="d-flex bg-primary flex justify-content-between ">
                                                 <div class="stat-icon p-2">
-                                                    <i class="fa fa-car fa-7x"/>
+                                                    <i class="fa fa-car fa-5x text-white"/>
                                                 </div>
                                                 <div class="px-4 mt-4 ">
                                                     <h3 class="text-white "> Total  vehicle </h3>
@@ -30,10 +30,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-5 all_products oh-data ">
-                                        <div class="card clickable-card ">
+                                        <div class="card clickable-card shadow-lg rounded">
                                             <div class="d-flex bg-success flex justify-content-between ">
                                                 <div class="stat-icon p-2">
-                                                    <i class="fa fa-user fa-7x"/>
+                                                    <i class="fa fa-user fa-5x text-white"/>
                                                 </div>
                                                 <div class="px-4 mt-4 ">
                                                     <h3 class="text-white "> Total Driver </h3>
@@ -45,10 +45,10 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-5 all_products oh-data ">
-                                        <div class="card ">
+                                        <div class="card shadow-lg rounded">
                                             <div class="d-flex bg-info flex justify-content-between ">
                                                 <div class="stat-icon p-2">
-                                                    <i class="fa fa-battery-quarter fa-7x"/>
+                                                    <i class="fa fa-battery-quarter fa-5x text-white"/>
                                                 </div>
                                                 <div class="px-4 mt-4 ">
                                                     <h3 class="text-white ">Total Fueling Request</h3>
@@ -66,10 +66,10 @@
                             <div class="col-sm-12 mb-4 ">
                                 <div class="row p-2">
                                     <div class="col-md-4 col-sm-5 all_products oh-data pt-2 ">
-                                        <div class="card ">
+                                        <div class="card shadow-lg rounded">
                                             <div class="d-flex bg-info flex justify-content-between ">
                                                 <div class="stat-icon p-2">
-                                                    <i class="fa fa-cogs fa-7x"/>
+                                                    <i class="fa fa-cogs fa-5x text-white"/>
                                                 </div>
                                                 <div class="px-4 mt-4 ">
                                                     <h3 class="text-white ">Total Services </h3>
@@ -81,25 +81,25 @@
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-5 all_products oh-data pt-2">
-                                        <div class="card ">
+                                        <div class="card shadow-lg rounded">
                                             <div class="d-flex bg-primary flex justify-content-between ">
                                                 <div class="stat-icon p-2">
-                                                    <i class="fa fa-users fa-7x"/>
+                                                    <i class="fa fa-users fa-5x text-white"/>
                                                 </div>
                                                 <div class="px-4 mt-4 ">
                                                     <h3 class="text-white ">Accidental Case</h3>
                                                     <span class="text-center" id="templates">
-                                                        <h2 class="text-white" id="total_admission"> </h2>
+                                                        <h2 class="text-white" id="accidental_case"> </h2>
                                                     </span>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-md-4 col-sm-5 all_products oh-data pt-2">
-                                        <div class="card ">
+                                        <div class="card shadow-lg rounded">
                                             <div class="d-flex bg-warning flex justify-content-between ">
                                                 <div class="stat-icon p-2">
-                                                    <i class="fa fa-cubes fa-7x"/>
+                                                    <i class="fa fa-cubes fa-5x text-white"/>
                                                 </div>
                                                 <div class="px-4 mt-4 ">
                                                     <h3 class="text-white ">Total Models </h3>
@@ -113,14 +113,26 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-sm-12 col-md-12 d-flex justify-content-start align-item-start p-5">
-                            <div class="team_ticket_div half_chart chart-container card-shadow">
-                                <h2 style="margin-top:50px;">Graph</h2>
-                                <hr />
-                                <div class="graph_canvas">
-                                    <canvas class="team_ticket_count" width="500" height="350" />
+                        <div class="row">
+                            <div class="col-6 col-sm-6 col-md-6 d-flex justify-content-start align-item-start p-5">
+                                <div class="team_ticket_div half_chart chart-container card-shadow">
+                                    <h2 style="margin-top:50px; color: green">Services Graph</h2>
+                                    <hr />
+                                    <div class="graph_canvas">
+                                        <canvas class="team_ticket_count" width="500" height="350" />
+                                    </div> 
+                               
                                 </div>
-                            </div>
+                            </div> 
+                            <div class="col-6 col-sm-6 col-md-6 d-flex justify-content-start align-item-start p-5">
+                                <div class="team_ticket_div half_chart chart-container card-shadow">
+                                    <h2 style="margin-top:50px; color: green">Refuel Graph</h2>
+                                    <hr />
+                                     <div class="graph_canvas">
+                                        <canvas class="vehicle_refueling_count" width="500" height="350" />
+                                    </div> 
+                                </div>
+                            </div>     
                         </div>
                     </section>
                 </div>

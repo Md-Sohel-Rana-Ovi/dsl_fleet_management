@@ -34,5 +34,19 @@
             <field name="number_increment">1</field>
             <field name="number_next_actual">0</field>
         </record>
+
+          <record model="ir.sequence" id="accidental_case_code_sequence">
+            <field name="name">Accidental Case</field>
+            <field name="code">dsl.accidental.case</field>
+            <field name="implementation">standard</field>
+            <field name="active">TRUE</field>
+            <field name="prefix">AC</field>
+            <field name="suffix"></field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+            <field name="number_next_actual">0</field>
+        </record>
     </data>
 </odoo>
+
+
