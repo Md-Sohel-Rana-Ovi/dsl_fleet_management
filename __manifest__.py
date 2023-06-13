@@ -63,7 +63,7 @@
         'web.assets_backend': [
             'dsl_fleet_management/static/src/js/dashboard.js',
             'dsl_fleet_management/static/src/xml/dashboard.xml',
-            'dsl_fleet_management/static/src/js/lib/Chart.bundle.js',
+            'dsl_fleet_management/static/src/js/libs/Chart.bundle.js',
         ],
     
         'web.assets_frontend': [

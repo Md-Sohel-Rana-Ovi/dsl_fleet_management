@@ -20,6 +20,7 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
             var self = this;
             this.set("title", 'Dashboard');
             return this._super().then(function() {
+                 self.fetch_data();
                 self.render_graphs();
                 self.$el.parent().addClass('oe_background_grey');
             });

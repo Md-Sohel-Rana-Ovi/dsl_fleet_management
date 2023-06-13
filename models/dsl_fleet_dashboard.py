@@ -49,7 +49,7 @@ class FleetDashboard(models.Model):
         #     # value = ticket_count.count(team_list[index])
         #     value = len(ticket_count)
         #     team_name = team_list[index]
-        #     team_val.append({'label': "total-admission", 'value': value})
+        #     team_val.append({'label': "total_vehicle", 'value': value})
         name = []
         for record in team_val:
             name.append(record.get('label'))
@@ -60,7 +60,7 @@ class FleetDashboard(models.Model):
         #
         team = [count, name]
         return team
-
     
+   
 
 
