@@ -14,9 +14,15 @@ class DslAccidentalCase(models.Model):
     manager_id = fields.Many2one('res.users', 'Fleet Manager', related='vehicle_id.manager_id', store=True)
     driver_id = fields.Many2one('res.partner',related='vehicle_id.driver_id', string='Driver')
     date = fields.Date(help='Date when the accident has been executed', default=fields.Date.context_today)
+    legal_case = fields.Boolean(string='Legal Case',  default=False)
+    fir_no = fields.Char("Fir No", track_visibility='onchange')
+    report_to_police = fields.Selection([
+    ('yes', 'Yes'),
+    ('no', 'No')], string='Reported to police')
+    if_not_report = fields.Char("If not reported to police give reason", track_visibility='onchange')
     active = fields.Boolean(string="Active", default=True, track_visibility='onchange')
     note = fields.Text(string='Note', track_visibility='onchange')
-
+    
    
 
     @api.model

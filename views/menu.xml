@@ -33,7 +33,7 @@
 
         <menuitem
             id="accidental_case"
-            name="Accidental Case"
+            name="Accidental Log"
             action="action_dsl_accidental_case_view"
             parent="fleet.menu_root"
              sequence="5"/>      

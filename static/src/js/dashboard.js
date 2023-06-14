@@ -23,6 +23,7 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
                  self.fetch_data();
                 self.render_graphs();
                 self.$el.parent().addClass('oe_background_grey');
+                self.bind_click_event();;
             });
         },
  
@@ -46,7 +47,9 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
             var templates = ['main_template_dashboard'];
             _.each(templates, function(template) {
                 self.$('.o_hr_dashboard').append(QWeb.render(template, {widget: self}))
+                
             });
+           
             
         },
         
@@ -161,71 +164,6 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
             });
         },
 
-        
-     
-    //     render_team_ticket_count_graph: function () {
-    //      var self = this
-    //      var ctx = self.$(".vehicle_refueling_count");
-    //      rpc.query({
-    //          model: "dsl.fleet.dashboard",
-    //          method: "get_team_ticket_count_pie",
-    //      }).then(function (arrays) {
-    //          var data = {
-    //              labels: arrays[1],
-    //              datasets: [{
-    //                  label: "",
-    //                  data: arrays[0],
-    //                  backgroundColor: [
-    //                      'rgba(255, 99, 132, 0.2)',
-    //                      'rgba(255, 159, 64, 0.2)',
-    //                      'rgba(255, 205, 86, 0.2)',
-    //                      'rgba(75, 192, 192, 0.2)',
-    //                      'rgba(54, 162, 235, 0.2)',
-    //                      'rgba(153, 102, 255, 0.2)',
-    //                      'rgba(201, 203, 207, 0.2)'
-    //                  ],
-    //                  borderColor: ['rgb(255, 99, 132)',
-    //                      'rgb(255, 159, 64)',
-    //                      'rgb(255, 205, 86)',
-    //                      'rgb(75, 192, 192)',
-    //                      'rgb(54, 162, 235)',
-    //                      'rgb(153, 102, 255)',
-    //                      'rgb(201, 203, 207)'
-    //                  ],
-    //                  borderWidth: 1
-    //              },]
-    //          };
- 
-    //          //options
-    //          var options = {
-    //              responsive: true,
-    //              title: false,
-    //              maintainAspectRatio: true,
-    //              legend: {
-    //                  display: false //This will do the task
-    //              },
-    //              scales: {
-    //                  yAxes: [{
-    //                      display: true,
-    //                      ticks: {
-    //                          beginAtZero: true,
-    //                          steps: 10,
-    //                          stepValue: 5,
-    //                          // max: 100
-    //                      }
-    //                  }]
-    //              }
-    //          };
- 
-    //          // create Chart class object
-    //          var chart = new Chart(ctx, {
-    //              type: "bar",
-    //              data: data,
-    //              options: options
-    //          });
-    //      });
-    //  },
- 
      
         fetch_data: function() {
             var self = this
@@ -241,6 +179,118 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
                 $('#total_refueling').append('<span>' + result.total_refueling + '</span>');
                 $('#total_services').append('<span>' + result.total_services + '</span>');
                 $('#accidental_case').append('<span>' + result.accidental_case + '</span>');
+            });
+        },
+        bind_click_event: function () {
+            this.$('.vehicles').click(this.vehicles.bind(this));
+            this.$('.drivers').click(this.drivers.bind(this));
+            this.$('.refuels').click(this.refuels.bind(this));
+            this.$('.services').click(this.services.bind(this));
+            this.$('.accidentals').click(this.accidentals.bind(this));
+            this.$('.models').click(this.models.bind(this));
+        },
+
+        vehicles: function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+
+            this.do_action({
+                name: "Vehicles",
+                type: 'ir.actions.act_window',
+                res_model: 'fleet.vehicle',
+                view_mode: 'list,kanban,form',
+                views: [
+                    [false, 'list'],
+                    [false, 'kanban'],
+                    [false, 'form']
+                ],
+                target: 'current'
+            });
+        },
+
+        drivers: function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+
+            this.do_action({
+                name: "Vehicles",
+                type: 'ir.actions.act_window',
+                res_model: 'fleet.vehicle',
+                view_mode: 'list,kanban,form',
+                views: [
+                    [false, 'list'],
+                    [false, 'kanban'],
+                    [false, 'form']
+                ],
+                target: 'current'
+            });
+        },
+
+        refuels: function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+
+            this.do_action({
+                name: "Refueling",
+                type: 'ir.actions.act_window',
+                res_model: 'dsl.vehicle.refueling',
+                view_mode: 'list,form',
+                views: [
+                    [false, 'list'],
+                    [false, 'form']
+                ],
+                target: 'current'
+            });
+        },
+
+        services: function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+
+            this.do_action({
+                name: "Services",
+                type: 'ir.actions.act_window',
+                res_model: 'fleet.vehicle.log.services',
+                view_mode: 'list,form',
+                views: [
+                    [false, 'list'],
+                    [false, 'form']
+                ],
+                target: 'current'
+            });
+        },
+
+        accidentals: function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+
+            this.do_action({
+                name: "Accidental Case",
+                type: 'ir.actions.act_window',
+                res_model: 'dsl.accidental.case',
+                view_mode: 'list,form',
+                views: [
+                    [false, 'list'],
+                    [false, 'form']
+                ],
+                target: 'current'
+            });
+        },
+
+        models: function (ev) {
+            ev.stopPropagation();
+            ev.preventDefault();
+
+            this.do_action({
+                name: "Models",
+                type: 'ir.actions.act_window',
+                res_model: 'fleet.vehicle.model',
+                view_mode: 'list,form',
+                views: [
+                    [false, 'list'],
+                    [false, 'form']
+                ],
+                target: 'current'
             });
         },
  

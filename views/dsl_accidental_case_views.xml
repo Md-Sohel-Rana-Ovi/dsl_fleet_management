@@ -54,10 +54,14 @@
                             <group> 
                                 <field name="date" string="Date"/>
                               <field name="driver_id"/>             
-                            </group>
+                              <field name="legal_case"/>             
+                              <field name="report_to_police" widget='radio'/>             
+                            </group>  
                             <group> 
                                  <field name="vehicle_id" />
                                  <field name="manager_id"/>
+                                 <field name="fir_no" attrs="{'invisible': [('report_to_police', '!=', 'yes')]}"/>
+                                 <field name="if_not_report" attrs="{'invisible': [('report_to_police', '!=', 'no')]}"/>
                             </group>
                         </group>
                          <separator string="Notes"/>
