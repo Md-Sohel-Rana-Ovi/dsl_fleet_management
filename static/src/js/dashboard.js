@@ -23,10 +23,11 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
                  self.fetch_data();
                 self.render_graphs();
                 self.$el.parent().addClass('oe_background_grey');
-                self.bind_click_event();;
+                self.bind_click_event();
+                // self.calendar_view();
             });
         },
- 
+        
         render_graphs: function () {
          var self = this;
          self.render_team_ticket_count_services_graph();
@@ -163,7 +164,30 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
                 });
             });
         },
-
+        
+        
+        // calendar_view: function () {
+        //     var self = this;
+        //     this.do_action({
+        //         name: "Calendar",
+        //         type: 'ir.actions.act_window',
+        //         res_model: 'sale.order',
+        //         view_mode: 'calendar',
+        //         views: [
+        //             [false, 'calendar']
+        //         ],
+        //         target: 'current'
+        //     }).then(function (result) {
+        //         if (result && result.calendar_view) {
+        //             var $calendarContainer = $('<div/>', {
+        //                 class: 'calendar-card-container',
+        //                 style: 'height: 500px;'
+        //             });
+        //             $calendarContainer.append(result.calendar_view);
+        //             $('#calendar_view').append($calendarContainer);
+        //         }
+        //     });
+        // },
      
         fetch_data: function() {
             var self = this
