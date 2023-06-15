@@ -103,7 +103,7 @@ odoo.define("dsl_fleet_management.Dashboard", function (require) {
                 };
         
                 var chart = new Chart(ctx, {
-                    type: "pie",
+                    type: "line",
                     data: chartData,
                     options: options
                 });

@@ -19,17 +19,20 @@ class FleetVehicleRefueling(models.Model):
     amount = fields.Monetary('Cost')
     description = fields.Char('Description')
     driver_id = fields.Many2one('res.partner',related='vehicle_id.driver_id', string='Driver')
-    odometer_id = fields.Many2one('fleet.vehicle.odometer', 'Odometer', help='Odometer measure of the vehicle at the moment of this log')
-    odometer = fields.Float(
-        compute="_get_odometer", inverse='_set_odometer', string='Odometer Value',
-        help='Odometer measure of the vehicle at the moment of this log')
-    odometer_unit = fields.Selection(related='vehicle_id.odometer_unit', string="Unit", readonly=True)
+    # odometer_id = fields.Many2one('fleet.vehicle.odometer', 'Odometer', help='Odometer measure of the vehicle at the moment of this log')
+    # odometer = fields.Float(
+    #     compute="_get_odometer", inverse='_set_odometer', string='Odometer Value',
+    #     help='Odometer measure of the vehicle at the moment of this log')
+    # odometer_unit = fields.Selection(related='vehicle_id.odometer_unit', string="Unit", readonly=True)
     date = fields.Date(help='Date when the cost has been executed', default=fields.Date.context_today)
     company_id = fields.Many2one('res.company', 'Company', default=lambda self: self.env.company)
     currency_id = fields.Many2one('res.currency', related='company_id.currency_id')
     purchaser_id = fields.Many2one('res.partner', string="Driver", compute='_compute_purchaser_id', readonly=False, store=True)
     inv_ref = fields.Char('Vendor Reference')
     vendor_id = fields.Many2one('res.partner', 'Vendor')
+    purchase_po_id = fields.Many2one('uom.uom',string="Purchase UoM")
+    fuel_qty = fields.Float(string='Fuel Qty')
+    # fuel_unit = fields.Selection(string="Fuel Unit", readonly=True)
     notes = fields.Text()
     service_type_id = fields.Many2one(
         'fleet.service.type', 'Service Type', required=True,
@@ -58,13 +61,21 @@ class FleetVehicleRefueling(models.Model):
         string='Is Approved', readonly="1", default=False, compute='_compute_approval_user')
     registration_date = fields.Datetime(string='Registration Date')
     approve_id = fields.Many2one('multi.approval', string="Approve By")
-    approve_line_ids = fields.One2many(
-        related='approve_id.line_ids', string="Approve Line")
+    approve_line_ids = fields.One2many(related='approve_id.line_ids', string="Approve Line")
     bill_count = fields.Integer(string="Invoice Count", compute='_get_bill_count')
-    product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
+    # product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
+    product_id = fields.Many2one('product.product', string='Product', default=lambda self: self.env['product.product'].search([('name', '=', 'Fueling Charge')], limit=1).id)
     move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
-    def _default_product_id(self):
-        return 0
+    
+    @api.onchange('fuel_qty')
+    def _onchange_fuel_qty_product_id(self):
+        for rec in self:
+            if rec.fuel_qty:
+                rec.amount = rec.fuel_qty * rec.product_id.list_price
+            else:
+                rec.amount = 0.0
+       
+        
     
     def _compute_approval_user(self):
         for rec in self:
@@ -80,22 +91,22 @@ class FleetVehicleRefueling(models.Model):
     
 
     
-    def _get_odometer(self):
-        self.odometer = 0
-        for record in self:
-            if record.odometer_id:
-                record.odometer = record.odometer_id.value
+    # def _get_odometer(self):
+    #     self.odometer = 0
+    #     for record in self:
+    #         if record.odometer_id:
+    #             record.odometer = record.odometer_id.value
 
-    def _set_odometer(self):
-        for record in self:
-            if not record.odometer:
-                raise UserError(_('Emptying the odometer value of a vehicle is not allowed.'))
-            odometer = self.env['fleet.vehicle.odometer'].create({
-                'value': record.odometer,
-                'date': record.date or fields.Date.context_today(record),
-                'vehicle_id': record.vehicle_id.id
-            })
-            self.odometer_id = odometer
+    # def _set_odometer(self):
+    #     for record in self:
+    #         if not record.odometer:
+    #             raise UserError(_('Emptying the odometer value of a vehicle is not allowed.'))
+    #         odometer = self.env['fleet.vehicle.odometer'].create({
+    #             'value': record.odometer,
+    #             'date': record.date or fields.Date.context_today(record),
+    #             'vehicle_id': record.vehicle_id.id
+    #         })
+    #         self.odometer_id = odometer
 
     def action_draft(self):
         self.state = 'draft'
@@ -151,7 +162,7 @@ class FleetVehicleRefueling(models.Model):
             'invoice_line_ids': [(0, 0, {
                 'product_id': self.product_id.id,
                 'quantity': 1,
-                'price_unit': self.amount,
+                'price_unit': self.product_id.list_price,
             })],
         }
         vendor_bill = self.env['account.move'].create(invoice_vals)

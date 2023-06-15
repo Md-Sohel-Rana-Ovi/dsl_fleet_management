@@ -12,31 +12,37 @@
             action="dsl_fleet_management_action" 
             parent="fleet.menu_root"
             sequence="0"/>
+
         <menuitem action="fleet.fleet_vehicle_log_services_action" 
             parent="fleet.menu_root" 
             id="fleet.fleet_vehicle_log_services_menu" 
             groups="fleet.fleet_group_user" 
-            sequence="2"/>
-        <menuitem
-            id="fleet_refueling_request"
+            sequence="2"/>    
+
+        <menuitem id="fleet_refueling_request"
             name="Refueling"
             action="action_dsl_refueling_request_view"
             parent="fleet.menu_root"
             sequence="3"/>
-            
+
+        <menuitem name="Others Info"
+                  id="fleet_other_info"
+                  parent="fleet.menu_root"
+                  sequence="4"/>
+      
         <menuitem
             id="vehicle_purchase"
-            name="Purchase"
+            name="Purchase Log"
             action="action_dsl_vehicle_purchase_view"
-            parent="fleet.menu_root"
-             sequence="4"/>  
+            parent="fleet_other_info"
+             sequence="1"/>  
 
         <menuitem
             id="accidental_case"
             name="Accidental Log"
             action="action_dsl_accidental_case_view"
-            parent="fleet.menu_root"
-             sequence="5"/>      
+            parent="fleet_other_info"
+             sequence="2"/>      
 
         <menuitem name="Maintenance"
                   id="fleet_maintenance"

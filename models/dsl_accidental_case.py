@@ -16,6 +16,7 @@ class DslAccidentalCase(models.Model):
     date = fields.Date(help='Date when the accident has been executed', default=fields.Date.context_today)
     legal_case = fields.Boolean(string='Legal Case',  default=False)
     fir_no = fields.Char("Fir No", track_visibility='onchange')
+    vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle')
     report_to_police = fields.Selection([
     ('yes', 'Yes'),
     ('no', 'No')], string='Reported to police')

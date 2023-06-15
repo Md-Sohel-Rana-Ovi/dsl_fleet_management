@@ -25,6 +25,14 @@
                         <field name="fueling_request_count" widget="statinfo" string="Fueling Request"/>
                     </button>
                 </xpath>
+                <xpath expr="//notebook/page[2]" position="after">
+                      <page name="purchase" string="Purchase">
+                            <field name="purchase_ids"/>
+                    </page>
+                    <page name="accidental" string="Accidental Case">
+                            <field name="accidental_log_ids"/>
+                    </page>
+                </xpath>
             </field>
         </record>
         <!-- vehicle service -->
@@ -33,7 +41,7 @@
             <field name="model">fleet.vehicle.log.services</field>
             <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//field[@name='vehicle_id']" position="before"> 
+                <xpath expr="//field[@name='vehicle_id']" position="before">
                     <field name="user_id"/>
                     <field name="manager_id"/>
                 </xpath>

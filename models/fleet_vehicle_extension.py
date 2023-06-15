@@ -3,7 +3,9 @@ from datetime import datetime
 
 class FleetVehicleExtension(models.Model):
     _inherit = 'fleet.vehicle'
-
+    
+    purchase_ids = fields.One2many('dsl.vehicle.purchase', 'vehicle_id', string="Purchase Log")
+    accidental_log_ids = fields.One2many('dsl.accidental.case', 'vehicle_id', string="Accidental Case")
     fueling_request_count = fields.Integer(string="Fuel Request Count", compute='_get_record_count')
     allocate_person = fields.Many2one('res.users', string='Allocate Person')
   

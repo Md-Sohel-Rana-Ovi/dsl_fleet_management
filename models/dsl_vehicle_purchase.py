@@ -12,6 +12,7 @@ class VehiclePurchase(models.Model):
     
     code = fields.Char(string='Code', required=True, copy=False,
                        readonly=True, index=True, default=lambda self: ('New'))
+    vehicle_id = fields.Many2one('fleet.vehicle', 'Vehicle')                   
     partner_id = fields.Many2one('res.partner', string='Vendor')
     serial_number = fields.Char(string = 'Serial Number')
     model_id = fields.Many2one('fleet.vehicle.model',string = 'Model')
