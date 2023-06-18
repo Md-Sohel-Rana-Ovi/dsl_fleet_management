@@ -66,7 +66,27 @@ class FleetVehicleRefueling(models.Model):
     # product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
     product_id = fields.Many2one('product.product', string='Product', default=lambda self: self.env['product.product'].search([('name', '=', 'Fueling Charge')], limit=1).id)
     move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
+    payment_id = fields.Many2one('account.payment', string='Payment', readonly=True)
     
+    
+    # def generate_fueling_money_receip_report(self):
+    #     return self.env.ref('account.action_report_payment_receipt').report_action(self)
+    
+    def generate_fueling_money_receip_report(self):
+        user_partner_id = self.user_id.partner_id.id
+
+        payment_model = self.env['account.payment']
+        payment_record = payment_model.search([('partner_id', '=', user_partner_id)], limit=1)
+
+        if payment_record:
+            report = self.env.ref('account.action_report_payment_receipt')
+            return report.report_action(payment_record)
+        else:
+   
+            return None
+
+
+
     @api.onchange('fuel_qty')
     def _onchange_fuel_qty_product_id(self):
         for rec in self:
@@ -114,13 +134,13 @@ class FleetVehicleRefueling(models.Model):
     def action_payment(self):
         self.state = 'payment'
         return {
-            'name': "Maintenance Payment",
+            'name': "Refueling Payment",
             'type': 'ir.actions.act_window',
             'res_model': 'dsl.fleet.payment.request.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'driver_id': self.id,
+                'user_id': self.id,
             },
         }
 
@@ -209,3 +229,11 @@ class FleetVehicleRefueling(models.Model):
             'dsl.vehicle.refueling')
         result = super(FleetVehicleRefueling, self).create(vals)
         return result
+
+
+
+
+class AccountPayment(models.Model):
+    _inherit = 'account.payment'
+    
+    refueling_id = fields.Many2one('dsl.vehicle.refueling', string='Refueling')

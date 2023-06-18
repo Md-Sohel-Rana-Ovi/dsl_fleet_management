@@ -24,6 +24,7 @@
         'base',
         'web',
         'fleet',
+        'account',
         'stock',
         'website',
         'sale_management',
@@ -54,6 +55,8 @@
         # reports
         'reports/dsl_refueling_appeoval_report.xml',
         'reports/dsl_services_approval_report.xml',
+        'reports/money_receipt_report_inherit.xml',
+
 
     ],
     # only loaded in demonstration mode

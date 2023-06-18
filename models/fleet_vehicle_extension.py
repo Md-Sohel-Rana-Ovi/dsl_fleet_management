@@ -76,6 +76,9 @@ class FleetVehicleServiceExtension(models.Model):
                             track_visibility='onchange')
     def _default_product_id(self):
         return 0
+
+    def generate_services_money_receip_report(self):
+        return self.env.ref('account.action_report_payment_receipt').report_action(self)    
     
     def _compute_approval_user(self):
         for rec in self:

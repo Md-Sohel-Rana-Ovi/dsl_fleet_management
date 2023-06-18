@@ -10,7 +10,7 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
     account_move_id = fields.Many2one(comodel_name="account.move")
     account_payment_id = fields.Many2one(comodel_name="account.payment")  
     # refuel_id = fields.Many2one('dsl.vehicle.refueling', 'Refuel', required=True)
-    user_id = fields.Many2one(comodel_name='res.users', string='Request For Payment')
+    user_id = fields.Many2one('res.users', string='Request For Payment', default=lambda self: self._default_user_id())
     partner_id = fields.Many2one(comodel_name="res.partner",string="Request Person")
     # name = fields.Char(related="student_id.name")
     journal_id = fields.Many2one(comodel_name='account.journal',
@@ -18,8 +18,10 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
                                  required=True,
                                  domain="[('type', 'in', ('bank', 'cash'))]",
                                  default=lambda self: self.env['account.journal'].search([('type', '=', 'cash')]))
-
+   
+    refueling_id = fields.Many2one('dsl.vehicle.refueling', string='Refueling',compute='_compute_user_id')
     company_id = fields.Many2one(comodel_name='res.company', default=lambda self: self.env.user.company_id.id)
+    # fueling_id = fields.Many2one('dsl.vehicle.refueling',string='Fueling')
     currency_id = fields.Many2one(comodel_name='res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
     amount_residual = fields.Monetary(related="account_move_id.amount_residual")
@@ -29,11 +31,15 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
                                            string="Total Payable Amount")
 
    
+     
+    def _default_user_id(self):
+        refueling = self.env['dsl.vehicle.refueling'].search([], limit=1, order='id desc')
+        return refueling.user_id.id if refueling else False
 
-    @api.depends('refuel_id')
+    @api.depends('refueling_id')
     def _compute_user_id(self):
         for record in self:
-            record.user_id = record.refuel_id.user_id
+            record.user_id = record.refueling_id.user_id.id
     
 
     def create_payment_maintenance(self):
@@ -43,6 +49,7 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
             'payment_type': 'outbound',
             'amount': self.amount,
             'currency_id': self.currency_id.id,
+            'refueling_id': self.refueling_id.id,
             'date': fields.Datetime.now(),
             'payment_method_id': self.env.ref('account.account_payment_method_manual_out').id,
             'partner_type': 'supplier',
@@ -72,7 +79,7 @@ class CreatePaymentMaintenanceRequest(models.TransientModel):
 
         if payment.state == 'draft':
             payment.action_post()
-        
+
         return True
         # return {
         #     'type': 'ir.actions.act_window',

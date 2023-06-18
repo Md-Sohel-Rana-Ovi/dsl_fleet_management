@@ -38,6 +38,7 @@
             <field name="arch" type="xml">
                 <form string="Refueling Request">
                     <header>
+                        <button name="generate_fueling_money_receip_report" string="Money Receipt" type="object" class="btn-primary" attrs="{'invisible': [('state', '!=', 'payment')]}"/>        
                         <button name="action_submit" string="Submit" type="object" class="oe_highlight" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                         <button name="action_approve" string="Approve" type="object" attrs="{'invisible': ['|', ('state', '!=', 'submit'), ('is_approved', '!=', True)]}"/>
                         <button id="button_payment" string="Advance Payment" name="action_payment" type="object" class="btn-success" attrs="{'invisible': [('state', '!=', 'approve')]}"/>
