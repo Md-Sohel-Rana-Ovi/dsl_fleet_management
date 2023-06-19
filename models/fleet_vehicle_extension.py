@@ -70,12 +70,13 @@ class FleetVehicleServiceExtension(models.Model):
     approve_line_ids = fields.One2many(
         related='approve_id.line_ids', string="Approve Line")
     bill_count = fields.Integer(string="Invoice Count", compute='_get_bill_count')
-    product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
+    # product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
+    product_id = fields.Many2one('product.product', string='Product', default=lambda self: self.env['product.product'].search([('name', '=', 'Service Charge')], limit=1).id)
     move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
     active = fields.Boolean(string="Active", default=True,
                             track_visibility='onchange')
-    def _default_product_id(self):
-        return 0
+    # def _default_product_id(self):
+    #     return 0
 
     def generate_services_money_receip_report(self):
         return self.env.ref('account.action_report_payment_receipt').report_action(self)    
@@ -93,18 +94,6 @@ class FleetVehicleServiceExtension(models.Model):
             rec.is_approved = is_approved
     
 
-    
-    # def payment_maintenance_request_view(self):
-    #     return {
-    #         'name': "Maintenance Payment",
-    #         'type': 'ir.actions.act_window',
-    #         'res_model': 'dsl.fleet.payment.request.wizard',
-    #         'view_mode': 'form',
-    #         'target': 'new',
-    #         'context': {
-    #             'driver_id': self.id,
-    #         },
-    #     }
 
     def action_draft(self):
         self.state = 'draft'

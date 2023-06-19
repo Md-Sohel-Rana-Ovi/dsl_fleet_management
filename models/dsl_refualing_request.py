@@ -56,7 +56,7 @@ class FleetVehicleRefueling(models.Model):
         ('payment', 'Payment'),
         ('bill', 'Generate Bill'),
         ('cancel', 'Cancelled'), ],
-        string='Status', readonly=True, default='draft')
+        string='Status', readonly=True, default='draft', group_expand='_expand_states')
     is_approved = fields.Boolean(
         string='Is Approved', readonly="1", default=False, compute='_compute_approval_user')
     registration_date = fields.Datetime(string='Registration Date')
@@ -222,7 +222,10 @@ class FleetVehicleRefueling(models.Model):
         else:
             action = {'type': 'ir.actions.act_window_close'}
         return action
-    
+     
+    def _expand_states(self, states, domain, order):
+        return [key for key, dummy in type(self).state.selection]
+
     @api.model
     def create(self, vals):
         vals['code'] = self.env['ir.sequence'].next_by_code(

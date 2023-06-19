@@ -26,7 +26,7 @@
                     <field name="manager_id"/>  
                     <field name="date"/>
                     <field name="amount" sum="Total" widget="monetary"/>
-                    <field name="state"/>
+                      <field name="state" readonly="1" widget="badge" decoration-success="state == 'done'" decoration-warning="state == 'draft'"  decoration-info="state == 'payment'" />
                 </tree>
             </field>
         </record>
