@@ -2,8 +2,90 @@
 <odoo>
     <template id="dsl_fleet_management_report_payment_receipt_document" inherit_id="account.report_payment_receipt_document">
         <xpath expr="//div[@class='page']" position="replace">
-            <div class="page mt-5" style=" margin-top: 300px; padding-top: 100px;">
-                <h3>
+            <div class="page mt-5" style=" margin-top: 200px; padding-top: 100px;">
+                <body>
+                    <div class="container"  style=" ">
+                        <div class="full-content">
+                            <div class="second-section" style=" width:100%;float:left; margin: 0 auto;display: flex; justify-content: space-between; align-items: center-;">
+                                <div class="text-center text-success">
+                                    <h1>MONEY RECEIPT</h1>
+                                </div>
+                                <div class="memo" style=" width:50%; margin-top: 100px;">
+                                    <h2>
+                                        <div class="col-12" t-if="o.ref">
+                                        Memo No:
+                                            <span class="ms-5" t-field="o.ref"/>
+                                        </div>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <h2>
+                            <div t-if="o.partner_type">
+                            Received with thanks from :
+                                <t t-if="o.partner_type == 'customer'"></t>
+                                <t t-if="o.partner_type == 'supplier'"></t>
+                                <span class="ms-5" t-field="o.partner_id"/>
+                            </div>
+                        </h2>
+                        <br/>
+                        <h2 class="amount">
+                            <div class="row">
+                                <div class="col-6" t-if="o.amount">
+                            Amount:
+                                    <span class="ms-5" t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
+                                </div>
+                                <div class="col-6" t-if="o.payment_method_id">
+                                Payment Method:
+                                    <span class="ms-5" t-field="o.payment_method_id.name"/>
+                                </div>
+                            </div>
+                            <span class="date-box"></span>
+                        </h2>
+                        <br/>
+                        <h2>
+                            <div class="row">
+                                <div class="col-6" t-if="o.journal_id">
+                                    By Cash/ Cheque No:
+                                    <span class="ms-5" t-field="o.journal_id"/>
+                                </div>
+                                <div class="col-6" t-if="o.date">
+                                Date:
+                                    <span class="ms-5" t-field="o.date"/>
+                                </div>
+                            </div>
+                        </h2>
+                        <br/>
+                        <h2>Amount in a word:
+                            <span class="ms-5"/>.................................................................................................
+                        </h2>
+                        <br/>
+                        <h2>For the Purpose of:
+                            <span class="ms-5"/>........................................................................Contact No:
+                            <span class="ms-5"/>.........................................
+                        </h2>
+                        <br/>
+                        <div class="row last-section"  style=" margin-top: 180px; padding-top: 80px;">
+                            <div class="col-6 received-by">
+                                <div style="text-align:center">
+                                    <h2>_________</h2>
+                                    <h2>Received By</h2>
+                                </div>
+                            </div>
+                            <div class="col-6 author-sign">
+                                <div style="text-align:center">
+                                    <h2>_________</h2>
+                                    <h2>Authorized Signature</h2>
+                                </div>
+                            </div>
+                            <div class="qr" style="text-align: end;">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSef_fp1l3Hu3PG7Q-7uywoM__hNVYdICbo1AEfhOvFzwms" style="width:100px" alt=""/>
+                            </div>
+                        </div>
+                    </div>
+                </body>
+                <!-- <h3>
                     <strong>Payment Receipt:
                         <span t-field="o.name"/>
                     </strong>
@@ -64,59 +146,14 @@
                 </div>
                 <div class="row" style="text-align: center; padding-top: 150px;">
                     <div class="col-6" >
-                        <hr/>
                         <span>Received By</span>
                     </div>
                     <div class="col-6" >
-                         <hr/>
                         <span>Authorized Signature</span>
-                    </div>
-                </div>
-                <!-- <div class="row">
-                    <div class="mb-4 mt-3">
-                        <div class="row">
-                            <div class="col-6" t-if="o.date">
-                                <span t-field="o.date"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6"  t-if="o.partner_type">
-                                <t t-if="o.partner_type == 'customer'">
-                                Customer:
-                            </t>
-                                <t t-if="o.partner_type == 'supplier'">
-                                Vendor:
-                            </t>
-                                <span t-field="o.partner_id"/>
-                            </div>
-                            <div class="col-6" style="margin-left: 5px;" t-if="o.payment_method_id">
-                            Payment Method:
-                                <span t-field="o.payment_method_id.name"/>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-6" t-if="o.amount">
-                            Payment Amount:
-                                <span t-field="o.amount" t-options="{'widget': 'monetary', 'display_currency': o.currency_id}"/>
-                            </div>
-                            <div class="col-6" t-if="o.ref">
-                            Memo:
-                                <span t-field="o.ref"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row" style="text-align: center; padding-top: 150px;">
-                        <div class="col-6" >
-                            <span>Account Signature</span>
-                        </div>
-                        <div class="col-6" >
-                            <span>Authorized Signature</span>
-                        </div>
                     </div>
                 </div> -->
                 <t t-set="partials" t-value="o.move_id._get_reconciled_invoices_partials()[0]"/>
                 <t t-set="invoices" t-value="{partial[2].move_id for partial in partials}"/>
-                <!-- Check if invoices include different currencies -->
                 <t t-foreach="invoices" t-as="inv">
                     <t t-if="any(inv.currency_id != par[2].currency_id for par in inv._get_reconciled_invoices_partials()[0])" t-set="otherCurrency" t-value="True"/>
                 </t>

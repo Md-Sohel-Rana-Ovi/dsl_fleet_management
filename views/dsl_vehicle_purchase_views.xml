@@ -20,11 +20,11 @@
             <field name="model">dsl.vehicle.purchase</field>
             <field name="arch" type="xml">
                 <tree string="Purchase">
+                    <field name="code"/>
                     <field name="partner_id"/>
                     <field name="serial_number"/>
                     <field name="model_id"/>
                     <field name="purchase_order_number"/>
-                    <field name="challan_number"/>
                 </tree>
             </field>
         </record>

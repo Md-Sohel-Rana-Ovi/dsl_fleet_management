@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <search string="Accidental Case">
                     <field name="code" string="Code"/>
-                    <field name="driver_id" string="Name"/>
-                    <field name="vehicle_id" string="Name"/>
-                    <field name="manager_id" string="Name"/>
+                    <field name="driver_id" string="Driver"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="manager_id" string="Manager"/>
                 </search>
             </field>
         </record>
@@ -21,9 +21,9 @@
             <field name="arch" type="xml">
                 <tree string="Accidental Case">
                     <field name="code" string="Code"/>
-                    <field name="driver_id" string="Name"/>
-                    <field name="vehicle_id" string="Name"/>
-                    <field name="manager_id" string="Name"/>
+                    <field name="driver_id" string="Driver"/>
+                    <field name="vehicle_id" string="Vehicle"/>
+                    <field name="manager_id" string="Manager"/>
                 </tree>
             </field>
         </record>
