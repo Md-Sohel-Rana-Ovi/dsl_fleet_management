@@ -4,7 +4,7 @@
         <record id="report_refueling_approval_payment_statement" model="ir.actions.report">
             <field name="name">Approval Refueling Payment Statement</field>
             <field name="model">dsl.vehicle.refueling</field>
-            <field name="report_type">qweb-html</field>
+            <field name="report_type">qweb-pdf</field>
             <field name="report_name">dsl_fleet_management.report_refueling_approval_payment_statement_template</field>
             <field name="report_file">dsl_fleet_management.report_refueling_approval_payment_statement_template</field>
             <field name="print_report_name">'Print Badge - %s' % (object.user_id.name).replace('/', '')</field>
