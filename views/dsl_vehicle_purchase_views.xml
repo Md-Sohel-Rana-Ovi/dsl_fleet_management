@@ -62,6 +62,7 @@
                         </div>
                         <group>
                             <group>
+                                <field name="vehicle_id"/>
                                 <field name="partner_id"/>
                                 <field name="serial_number"/>
                                 <field name="model_id"/>

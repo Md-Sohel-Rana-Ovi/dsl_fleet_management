@@ -70,6 +70,7 @@ class FleetVehicleServiceExtension(models.Model):
     approve_line_ids = fields.One2many(
         related='approve_id.line_ids', string="Approve Line")
     bill_count = fields.Integer(string="Invoice Count", compute='_get_bill_count')
+    total_invoice_count = fields.Integer(string="Invoice", compute='_get_total_bill_count')
     # product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
     product_id = fields.Many2one('product.product', string='Product', default=lambda self: self.env['product.product'].search([('name', '=', 'Service Charge')], limit=1).id)
     move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
@@ -172,7 +173,15 @@ class FleetVehicleServiceExtension(models.Model):
                 ('state', '=', 'draft')
             ])
             rec.bill_count = len(invoice_ids)     
-              
+   
+    def _get_total_bill_count(self):
+        for rec in self:
+            invoice_ids = self.env['account.move'].search([
+                ('partner_id', '=', rec.user_id.partner_id.id),
+                ('move_type', '=', 'in_invoice'),
+                ('state', '!=', 'draft')
+            ])
+            rec.total_invoice_count = len(invoice_ids)            
    
     def action_view_bill(self):
         invoices = self.env['account.move'].search([('partner_id', '=', self.user_id.partner_id.id), ('move_type', '=', 'in_invoice'), ('state', '=', 'draft')])
@@ -189,3 +198,19 @@ class FleetVehicleServiceExtension(models.Model):
         else:
             action = {'type': 'ir.actions.act_window_close'}
         return action        
+
+    def action_total_view_bill(self):
+        invoices = self.env['account.move'].search([('partner_id', '=', self.user_id.partner_id.id), ('move_type', '=', 'in_invoice'), ('state', '!=', 'draft')])
+        if invoices:
+            action = {
+                'name': 'Request Bill',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'tree,form',
+                'res_model': 'account.move',
+                'views': [(False, 'tree'), (False, 'form')],
+                'domain': [('id', 'in', invoices.ids)],
+                'context': {'create': False}
+            }
+        else:
+            action = {'type': 'ir.actions.act_window_close'}
+        return action         

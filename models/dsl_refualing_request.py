@@ -2,6 +2,7 @@
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 from datetime import datetime
+from num2words import num2words
 
 
 class FleetVehicleRefueling(models.Model):
@@ -63,6 +64,7 @@ class FleetVehicleRefueling(models.Model):
     approve_id = fields.Many2one('multi.approval', string="Approve By")
     approve_line_ids = fields.One2many(related='approve_id.line_ids', string="Approve Line")
     bill_count = fields.Integer(string="Invoice Count", compute='_get_bill_count')
+    total_invoice_count = fields.Integer(string="Invoice", compute='_get_total_bill_count')
     # product_id = fields.Many2one('product.product', string='Product', default=lambda self: self._default_product_id())
     product_id = fields.Many2one('product.product', string='Product', default=lambda self: self.env['product.product'].search([('name', '=', 'Fueling Charge')], limit=1).id)
     move_id = fields.Many2one('account.move', string='Invoice', readonly=True)
@@ -206,7 +208,15 @@ class FleetVehicleRefueling(models.Model):
             ])
             rec.bill_count = len(invoice_ids)     
               
-   
+    def _get_total_bill_count(self):
+        for rec in self:
+            invoice_ids = self.env['account.move'].search([
+                ('partner_id', '=', rec.user_id.partner_id.id),
+                ('move_type', '=', 'in_invoice'),
+                ('state', '!=', 'draft')
+            ])
+            rec.total_invoice_count = len(invoice_ids)  
+
     def action_view_bill(self):
         invoices = self.env['account.move'].search([('partner_id', '=', self.user_id.partner_id.id), ('move_type', '=', 'in_invoice'), ('state', '=', 'draft')])
         if invoices:
@@ -222,6 +232,22 @@ class FleetVehicleRefueling(models.Model):
         else:
             action = {'type': 'ir.actions.act_window_close'}
         return action
+
+    def action_total_view_bill(self):
+        invoices = self.env['account.move'].search([('partner_id', '=', self.user_id.partner_id.id), ('move_type', '=', 'in_invoice'), ('state', '!=', 'draft')])
+        if invoices:
+            action = {
+                'name': 'Request Bill',
+                'type': 'ir.actions.act_window',
+                'view_mode': 'tree,form',
+                'res_model': 'account.move',
+                'views': [(False, 'tree'), (False, 'form')],
+                'domain': [('id', 'in', invoices.ids)],
+                'context': {'create': False}
+            }
+        else:
+            action = {'type': 'ir.actions.act_window_close'}
+        return action    
      
     def _expand_states(self, states, domain, order):
         return [key for key, dummy in type(self).state.selection]
@@ -234,9 +260,62 @@ class FleetVehicleRefueling(models.Model):
         return result
 
 
-
-
-class AccountPayment(models.Model):
+class AccountInvoice(models.Model):
     _inherit = 'account.payment'
-    
+
+    amount_in_words = fields.Char(compute='amount_word', string='Amount', readonly=True)
+    print_to_report = fields.Boolean("Show in Report", default=True)
     refueling_id = fields.Many2one('dsl.vehicle.refueling', string='Refueling')
+    currency_id = fields.Many2one('res.currency', string='Currency')
+
+    @api.depends('amount')
+    def amount_word(self):
+        self.ensure_one()
+
+        language = 'en'
+
+        list_lang = [['en', 'en_US'], ['en', 'en_AU'], ['en', 'en_GB'], ['en', 'en_IN'],
+                     ['fr', 'fr_BE'], ['fr', 'fr_CA'], ['fr', 'fr_CH'], ['fr', 'fr_FR'],
+                     ['es', 'es_ES'], ['es', 'es_AR'], ['es', 'es_BO'], ['es', 'es_CL'], ['es', 'es_CO'],
+                     ['es', 'es_CR'], ['es', 'es_DO'],
+                     ['es', 'es_EC'], ['es', 'es_GT'], ['es', 'es_MX'], ['es', 'es_PA'], ['es', 'es_PE'],
+                     ['es', 'es_PY'], ['es', 'es_UY'], ['es', 'es_VE'],
+                     ['lt', 'lt_LT'], ['lv', 'lv_LV'], ['no', 'nb_NO'], ['pl', 'pl_PL'], ['ru', 'ru_RU'],
+                     ['dk', 'da_DK'], ['pt_BR', 'pt_BR'], ['de', 'de_DE'], ['de', 'de_CH'],
+                     ['ar', 'ar_SY'], ['it', 'it_IT'], ['he', 'he_IL'], ['id', 'id_ID'], ['tr', 'tr_TR'],
+                     ['nl', 'nl_NL'], ['nl', 'nl_BE'], ['uk', 'uk_UA'], ['sl', 'sl_SI'], ['th', 'th_TH']]
+
+        cnt = 0
+        for rec in list_lang[cnt:len(list_lang)]:
+            if rec[1] == self.partner_id.lang:
+                language = rec[0]
+            cnt += 1
+
+        if language == 'th':
+            self.amount_in_words = bahttext(self.amount)
+            return
+
+        amount_str = str('{:.2f}'.format(self.amount))
+        amount_str_splt = amount_str.split('.')
+        before_point_value = amount_str_splt[0]
+        after_point_value = amount_str_splt[1][:2]
+
+        before_amount_words = num2words(int(before_point_value), lang=language)
+        after_amount_words = num2words(int(after_point_value), lang=language)
+
+        amount = before_amount_words
+
+        if self.currency_id:
+            if self.currency_id.currency_unit_label:
+                amount = amount + ' ' + self.currency_id.currency_unit_label
+
+            if hasattr(self.currency_id, 'amount_separator'):
+                amount = amount + ' ' + self.currency_id.amount_separator
+
+            amount = amount + ' ' + after_amount_words
+
+            if self.currency_id.currency_subunit_label:
+                amount = amount + ' ' + self.currency_id.currency_subunit_label
+
+        self.amount_in_words = amount
+

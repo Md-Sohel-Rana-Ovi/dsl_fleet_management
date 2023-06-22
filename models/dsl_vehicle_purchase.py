@@ -42,3 +42,19 @@ class VehiclePurchase(models.Model):
             'dsl.vehicle.purchase')
         result = super(VehiclePurchase, self).create(vals)
         return result
+
+    # @api.model
+    # def create(self, vals):
+    #     vals['code'] = self.env['ir.sequence'].next_by_code('dsl.vehicle.purchase')
+    #     result = super(VehiclePurchase, self).create(vals)
+
+    #     # Update purchase_ids in fleet.vehicle with the newly created record
+    #     vehicle = self.env['fleet.vehicle'].browse(result.vehicle_id.id)
+    #     purchase_log = self.env['dsl.vehicle.purchase'].create({
+    #         'vehicle_id': vehicle.id,
+    #         # Add other values as required for the purchase log record
+    #     })
+    #     vehicle.purchase_ids = [(4, purchase_log.id, None)]
+        
+    #     return result 
+#    dashboard_id = request.env['fleet.vehicle'].sudo().search([])        
